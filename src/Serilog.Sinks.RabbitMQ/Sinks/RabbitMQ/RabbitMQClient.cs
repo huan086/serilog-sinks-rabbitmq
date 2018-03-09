@@ -177,7 +177,9 @@ namespace Serilog.Sinks.RabbitMQ
                 {
                     if (_connection == null)
                     {
-                        _connection = _connectionFactory.CreateConnection();
+                        _connection = _config.Hostnames == null || _config.Hostnames.Count == 0
+                            ? _connectionFactory.CreateConnection()
+                            : _connectionFactory.CreateConnection(_config.Hostnames);
                     }
                 }
             }
