@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RabbitMQ.Client;
 using Serilog.Configuration;
+using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Sinks.RabbitMQ;
 using Serilog.Sinks.RabbitMQ.Sinks.RabbitMQ;
@@ -35,7 +36,8 @@ namespace Serilog
             this LoggerSinkConfiguration loggerConfiguration,
             RabbitMQConfiguration rabbitMqConfiguration,
             ITextFormatter formatter,
-            IFormatProvider formatProvider = null)
+            IFormatProvider formatProvider = null,
+            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose)
         {
             if (loggerConfiguration == null) throw new ArgumentNullException("loggerConfiguration");
             if (rabbitMqConfiguration == null) throw new ArgumentNullException("rabbitMqConfiguration");
@@ -56,9 +58,10 @@ namespace Serilog
                 rabbitMqConfiguration.BatchPostingLimit,
                 rabbitMqConfiguration.Period,
                 formatter,
-                formatProvider);
+                formatProvider,
+                restrictedToMinimumLevel);
         }
-        
+
         /// <summary>
         /// Configures Serilog logger configuration with RabbitMQ
         /// </summary>
@@ -78,7 +81,8 @@ namespace Serilog
             int batchPostingLimit = 0,
             TimeSpan period = default(TimeSpan),
             ITextFormatter formatter = null,
-            IFormatProvider formatProvider = null)
+            IFormatProvider formatProvider = null,
+            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose)
         {
             // guards
             if (loggerConfiguration == null) throw new ArgumentNullException("loggerConfiguration");
@@ -104,10 +108,10 @@ namespace Serilog
                 BatchPostingLimit = batchPostingLimit == default(int) ? DefaultBatchPostingLimit : batchPostingLimit,
                 Period = period == default(TimeSpan) ? DefaultPeriod : period
             };
-            
+
             return
                 loggerConfiguration
-                    .Sink(new RabbitMQSink(config, formatter, formatProvider));
+                    .Sink(new RabbitMQSink(config, formatter, formatProvider), restrictedToMinimumLevel);
         }
 
         /// <summary>
@@ -129,7 +133,8 @@ namespace Serilog
             int batchPostingLimit,
             TimeSpan period,
             ITextFormatter formatter,
-            IFormatProvider formatProvider = null)
+            IFormatProvider formatProvider = null,
+            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose)
         {
             // guards
             if (loggerConfiguration == null) throw new ArgumentNullException("loggerConfiguration");
@@ -159,7 +164,7 @@ namespace Serilog
 
             return
                 loggerConfiguration
-                    .Sink(new RabbitMQSink(config, formatter, formatProvider));
+                    .Sink(new RabbitMQSink(config, formatter, formatProvider), restrictedToMinimumLevel);
         }
 
         /// <summary>
@@ -181,7 +186,8 @@ namespace Serilog
             int batchPostingLimit,
             TimeSpan period,
             ITextFormatter formatter,
-            IFormatProvider formatProvider = null)
+            IFormatProvider formatProvider = null,
+            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose)
         {
             return loggerConfiguration.RabbitMQ(
                 hostnames.ToList(),
@@ -198,7 +204,8 @@ namespace Serilog
                 batchPostingLimit,
                 period,
                 formatter,
-                formatProvider);
+                formatProvider,
+                restrictedToMinimumLevel);
         }
 
         private const int DefaultBatchPostingLimit = 50;

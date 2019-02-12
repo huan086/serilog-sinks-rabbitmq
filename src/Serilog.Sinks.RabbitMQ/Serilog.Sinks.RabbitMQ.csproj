@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <VersionPrefix>2.0.3</VersionPrefix>
-    <VersionSuffix>multiple-hostnames0001</VersionSuffix>
+    <VersionSuffix>multiple-hostnames0002</VersionSuffix>
     <TargetFrameworks>net451;netstandard1.6</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyName>Serilog.Sinks.RabbitMQ</AssemblyName>
